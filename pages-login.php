@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('db_connection.php'); 
+include('db_connection.php');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
@@ -21,7 +21,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['login_user'] = $row['nama'];
         $_SESSION['login_id'] = $row['id'];
         $_SESSION['login_email'] = $row['email'];
-        header("location: index.php"); 
+        $_SESSION['login_role'] = $row['role']; // Add this line to store the role in the session
+
+        // Redirect based on role
+        if ($row['role'] == 'Admin') {
+            header("location: index.php");
+        } elseif ($row['role'] == 'Head') {
+            header("location: head/index.php");
+        } else {
+            // Default fallback if the role is not recognized
+            header("location: index.php");
+        }
+        exit;
     } else {
         $error = "Your Email or Password is invalid";
     }
